@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #e0e0e0;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+        .business-card {
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+        .business-card img {
+            border-radius: 8px;
+        }
+    </style>
+    <title>{{ card.prename }} {{ card.name }} - Business Card</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="business-card text-center">
+            <h2>{{ card.prename }} {{ card.name }}</h2>
+            <p><strong>{{ card.prefix }}</strong></p>
+            <p>{{ card.company }}</p>
+            <p>{{ card.phone }}</p>
+            <p>{{ card.email }}</p>
+            <p>{{ card.address }}, {{ card.country }}</p>
+            <p>{{ card.task }}</p>
+            <img src="{{ url_for('static', filename='images/' + card.picture) }}" class="img-fluid mb-3" style="max-width: 150px;" alt="Profile Picture">
+            <div class="mt-3">
+                <a href="{{ url_for('view_links', id=card.id) }}">
+                    <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code" class="img-fluid" style="max-width: 150px;">
+                </a>
+                <p>Scan the QR code to view links.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

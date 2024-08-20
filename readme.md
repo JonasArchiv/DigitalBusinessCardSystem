@@ -13,3 +13,25 @@ This is a simple system to create and manage digital business cards for your cop
 - `/links/<int:id>` - View the links of a business card
 - `/create` - Create a new business card
 - `/edit/<int:id>` - Edit a business card
+
+## Preview
+Main Page <br>
+<img src="pictures/mainpage.png"> <br>
+
+Create Card <br>
+<img src="pictures/create_card.png"> <br>
+
+Edit Card <br>
+<img src="pictures/edit_card.png"> <br>
+
+View Card (Template 1)<br>
+<img src="pictures/temp_1.png"> <br>
+
+View Card (Template 2)<br>
+<img src="pictures/temp_2.png"> <br>
+
+View Card (Template 3)<br>
+<img src="pictures/temp_3.png"> <br>
+
+Show Links<br>
+<img src="pictures/Links.png"> <br>

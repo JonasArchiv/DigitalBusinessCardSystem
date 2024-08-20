@@ -53,13 +53,13 @@ def view_card(id):
     buffer = BytesIO()
     qr_code_img.save(buffer)
     qr_code_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    return render_template(f'template_{card.template}.html', card=card, qr_code_base64=qr_code_base64)
+    return render_template(f'template{card.template}.html', card=card, qr_code_base64=qr_code_base64)
 
 
 @app.route('/links/<int:id>')
 def view_links(id):
     card = BusinessCards.query.get_or_404(id)
-    return render_template('links.html', card=card)
+    return render_template('view_links.html', card=card)
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -92,7 +92,7 @@ def create_card():
         db.session.commit()
         return redirect(url_for('index'))
 
-    return render_template('create.html')
+    return render_template('create_card.html')
 
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -125,7 +125,7 @@ def edit_card(id):
         db.session.commit()
         return redirect(url_for('index'))
 
-    return render_template('edit.html', card=card)
+    return render_template('edit_card.html', card=card)
 
 
 if __name__ == '__main__':

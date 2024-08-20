@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <script src="/static/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <title>Edit Business Card</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Edit Business Card</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="prefix" class="form-label">Prefix (e.g., Dr., Prof.)</label>
+                <input type="text" class="form-control" id="prefix" name="prefix" value="{{ card.prefix }}">
+            </div>
+            <div class="mb-3">
+                <label for="name" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ card.name }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="prename" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="prename" name="prename" value="{{ card.prename }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="company" class="form-label">Company</label>
+                <input type="text" class="form-control" id="company" name="company" value="{{ card.company }}">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="phone" name="phone" value="{{ card.phone }}">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ card.email }}">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" class="form-control" id="address" name="address" value="{{ card.address }}">
+            </div>
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" class="form-control" id="country" name="country" value="{{ card.country }}">
+            </div>
+            <div class="mb-3">
+                <label for="task" class="form-label">Task</label>
+                <input type="text" class="form-control" id="task" name="task" value="{{ card.task }}">
+            </div>
+            <div class="mb-3">
+                <label for="picture" class="form-label">Profile Picture</label>
+                <input type="file" class="form-control" id="picture" name="picture">
+            </div>
+            <div class="mb-3">
+                <label for="template" class="form-label">Template</label>
+                <select class="form-select" id="template" name="template" required>
+                    <option value="1" {% if card.template == '1' %}selected{% endif %}>Template 1</option>
+                    <option value="2" {% if card.template == '2' %}selected{% endif %}>Template 2</option>
+                    <option value="3" {% if card.template == '3' %}selected{% endif %}>Template 3</option>
+                </select>
+            </div>
+            <div id="links-container">
+                <h5>Links</h5>
+                {% for link in card.links %}
+                <div class="link-group mb-3">
+                    <label for="link_name" class="form-label">Link Name</label>
+                    <input type="text" class="form-control" name="link_name" value="{{ link.name }}">
+                    <label for="link_url" class="form-label">Link URL</label>
+                    <input type="text" class="form-control" name="link_url" value="{{ link.link }}">
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-secondary mb-3" id="add-link">Add Another Link</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('add-link').addEventListener('click', function() {
+            const container = document.getElementById('links-container');
+            const newLink = document.createElement('div');
+            newLink.className = 'link-group mb-3';
+            newLink.innerHTML = `
+                <label for="link_name" class="form-label">Link Name</label>
+                <input type="text" class="form-control" name="link_name">
+                <label for="link_url" class="form-label">Link URL</label>
+                <input type="text" class="form-control" name="link_url">
+            `;
+            container.appendChild(newLink);
+        });
+    </script>
+</body>
+</html>

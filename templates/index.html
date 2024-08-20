@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <script src="/static/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <title>Business Cards</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Business Cards</h1>
+        <a href="/create" class="btn btn-primary mb-3">Create New Card</a>
+        <div class="row">
+            {% for card in cards %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ url_for('static', filename='images/' + card.picture) }}" class="card-img-top" alt="Profile Picture">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ card.prename }} {{ card.name }}</h5>
+                        <p class="card-text">{{ card.company }}</p>
+                        <a href="/card/{{ card.id }}" class="btn btn-primary">View Card</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

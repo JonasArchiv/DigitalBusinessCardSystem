@@ -46,6 +46,22 @@ def index():
     return render_template('index.html', cards=cards)
 
 
+@app.route('/card/<int:id>')
+def view_card(id):
+    card = BusinessCards.query.get_or_404(id)
+    qr_code_img = qrcode.make(url_for('view_links', id=id, _external=True))
+    buffer = BytesIO()
+    qr_code_img.save(buffer)
+    qr_code_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return render_template(f'template_{card.template}.html', card=card, qr_code_base64=qr_code_base64)
+
+
+@app.route('/links/<int:id>')
+def view_links(id):
+    card = BusinessCards.query.get_or_404(id)
+    return render_template('links.html', card=card)
+
+
 @app.route('/create', methods=['GET', 'POST'])
 def create_card():
     if request.method == 'POST':
@@ -77,6 +93,39 @@ def create_card():
         return redirect(url_for('index'))
 
     return render_template('create.html')
+
+
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_card(id):
+    card = BusinessCards.query.get_or_404(id)
+    if request.method == 'POST':
+        picture_file = request.files['picture']
+        if picture_file:
+            picture_filename = picture_file.filename
+            picture_file.save(os.path.join('static/images', picture_filename))
+            card.picture = picture_filename
+
+        card.prefix = request.form.get('prefix')
+        card.name = request.form['name']
+        card.prename = request.form['prename']
+        card.company = request.form.get('company')
+        card.phone = request.form.get('phone')
+        card.email = request.form.get('email')
+        card.address = request.form.get('address')
+        card.country = request.form.get('country')
+        card.task = request.form.get('task')
+        card.template = request.form['template']
+
+        card.links.clear()
+        for link_name, link_url in zip(request.form.getlist('link_name'), request.form.getlist('link_url')):
+            if link_name and link_url:
+                link = Links(name=link_name, link=link_url)
+                card.links.append(link)
+
+        db.session.commit()
+        return redirect(url_for('index'))
+
+    return render_template('edit.html', card=card)
 
 
 if __name__ == '__main__':

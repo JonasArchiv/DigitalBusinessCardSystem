@@ -14,6 +14,7 @@ This is a simple system to create and manage digital business cards for your cop
 - `/links/<int:id>` - View the links of a business card
 - `/create` - Create a new business card
 - `/edit/<int:id>` - Edit a business card
+- `/logs>` - View the access logs and filter by date and card 
 
 ## Preview
 Main Page <br>
@@ -36,3 +37,7 @@ View Card (Template 3)<br>
 
 Show Links<br>
 <img src="pictures/Links.png"> <br>
+
+Logs<br>
+<img src="pictures/template_view_log.png"> <br>
+I make a picture of the template html for private reasons <br>

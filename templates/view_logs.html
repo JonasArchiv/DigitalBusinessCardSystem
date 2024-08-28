@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Logs</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .form-control, .btn {
+            border-radius: 4px;
+        }
+        .table thead th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="card p-4">
+            <h1 class="mb-4">Logs</h1>
+
+            <form method="post" action="{{ url_for('view_logs') }}" class="mb-4">
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="card">Filter by Card</label>
+                        <select id="card" name="card" class="form-control">
+                            <option value="">All Cards</option>
+                            {% for card in cards %}
+                                <option value="{{ card.id }}">{{ card.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="date">Filter by Date</label>
+                        <input type="date" id="date" name="date" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="sort_by">Sort by</label>
+                        <select id="sort_by" name="sort_by" class="form-control">
+                            <option value="timestamp" {% if sort_by == 'timestamp' %}selected{% endif %}>Timestamp</option>
+                            <option value="card" {% if sort_by == 'card' %}selected{% endif %}>Card</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Filter</button>
+            </form>
+
+            {% if visits %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Card ID</th>
+                        <th>IP Address</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visit in visits %}
+                    <tr>
+                        <td>{{ visit.id }}</td>
+                        <td>{{ visit.businesscard_id }}</td>
+                        <td>{{ visit.ip_address }}</td>
+                        <td>{{ visit.timestamp }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+                No logs found.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

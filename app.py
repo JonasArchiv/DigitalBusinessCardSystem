@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 import qrcode
 from io import BytesIO
@@ -8,6 +8,8 @@ import os
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = 'supersecretkey'
+PASSWORD = 'adminpassword'  # Change Password
 db = SQLAlchemy(app)
 
 businesscards_links = db.Table('businesscards_links',
@@ -32,12 +34,20 @@ class BusinessCards(db.Model):
     template = db.Column(db.String(50), nullable=False)
     links = db.relationship('Links', secondary=businesscards_links, lazy='subquery',
                             backref=db.backref('businesscards', lazy=True))
+    visits = db.relationship('Visit', backref='business_card', lazy=True)
 
 
 class Links(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     link = db.Column(db.String(200), nullable=False)
+
+
+class Visit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip_address = db.Column(db.String(45), nullable=False)
+    businesscard_id = db.Column(db.Integer, db.ForeignKey('business_cards.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=db.func.now())
 
 
 @app.route('/')
@@ -49,6 +59,10 @@ def index():
 @app.route('/card/<int:id>')
 def view_card(id):
     card = BusinessCards.query.get_or_404(id)
+    ip_address = request.remote_addr
+    visit = Visit(ip_address=ip_address, business_card=card)
+    db.session.add(visit)
+    db.session.commit()
     qr_code_img = qrcode.make(url_for('view_links', id=id, _external=True))
     buffer = BytesIO()
     qr_code_img.save(buffer)
@@ -59,7 +73,26 @@ def view_card(id):
 @app.route('/links/<int:id>')
 def view_links(id):
     card = BusinessCards.query.get_or_404(id)
+    ip_address = request.remote_addr
+    visit = Visit(ip_address=ip_address, business_card=card)
+    db.session.add(visit)
+    db.session.commit()
     return render_template('view_links.html', card=card)
+
+
+@app.route('/logs', methods=['GET', 'POST'])
+def view_logs():
+    if request.method == 'POST':
+        if request.form['password'] == PASSWORD:
+            sort_by = request.form.get('sort_by', 'timestamp')
+            if sort_by == 'card':
+                visits = Visit.query.order_by(Visit.businesscard_id).all()
+            else:
+                visits = Visit.query.order_by(Visit.timestamp).all()
+            return render_template('view_logs.html', visits=visits)
+        else:
+            return "Invalid password. Please try again."
+    return render_template('login.html')
 
 
 @app.route('/create', methods=['GET', 'POST'])
@@ -129,4 +162,5 @@ def edit_card(id):
 
 
 if __name__ == '__main__':
+    db.create_all()
     app.run()

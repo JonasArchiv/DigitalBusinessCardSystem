@@ -6,6 +6,7 @@ This is a simple system to create and manage digital business cards for your cop
 1. Clone the repository
 2. Install Requirements (`pip install -r requirements.txt`)
 3. Run Program (`python app.py`)
+4. Change Password and supersecret key in app.py
 
 ## Routes
 - `/` - Home Page → See all business cards

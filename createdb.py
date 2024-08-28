@@ -28,12 +28,20 @@ class BusinessCards(db.Model):
     template = db.Column(db.String(50), nullable=False)
     links = db.relationship('Links', secondary=businesscards_links, lazy='subquery',
                             backref=db.backref('businesscards', lazy=True))
+    visits = db.relationship('Visit', backref='business_card', lazy=True)
 
 
 class Links(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     link = db.Column(db.String(200), nullable=False)
+
+
+class Visit(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip_address = db.Column(db.String(45), nullable=False)
+    businesscard_id = db.Column(db.Integer, db.ForeignKey('business_cards.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=db.func.now())
 
 
 with app.app_context():
